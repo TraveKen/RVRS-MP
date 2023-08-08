@@ -42,6 +42,7 @@ class Player(App):
             with RadioSet():
                 with open(os.path.join(config_dir, 'music.txt'), 'r') as f:
                     self.song_list = f.read().split("\n")
+                    self.song_list = [os.path.join(i) for i in self.song_list if i != '']
                 for song in range(len(self.song_list)):
                     audio = eyed3.load(self.song_list[song])
                     if audio.tag:
@@ -248,7 +249,7 @@ class Player(App):
         radioset = self.query_one(RadioSet)
         with open(os.path.join(config_dir, 'music.txt'), 'r') as f:
             self.song_list = f.read().split("\n")
-            self.song_list = [os.path.join(i) for i in self.song_list]
+            self.song_list = [os.path.join(i) for i in self.song_list if i != '']
         audio = eyed3.load(self.song_list[self.song_count])
         title_widget = self.query_one("#title")
         image_widget = self.query_one(ImageViewer)
@@ -263,7 +264,7 @@ class Player(App):
                 image_byte = BytesIO(audio.tag.images[0].image_data)
                 thumbnail = Image.open(image_byte)
             else:
-                thumbnail = Image.open(os.path.join(config_dir, 'music.png'))
+                thumbnail = Image.open('music.png')
             self.total_time_value = int(audio.info.time_secs)
         if self.status == 'playing':
             play_audio(self.song_list[self.song_count], 0)
@@ -279,29 +280,25 @@ class Player(App):
 
 if __name__ == "__main__":
     if sys.platform.startswith("win"):
-        config_dir = os.path.join(os.getenv("APPDATA"), "RVRS MP")
+        config_dir = os.path.join(os.getenv("APPDATA"), "RVRS-MP")
     elif sys.platform.startswith("darwin"):
-        config_dir = os.path.join(os.path.expanduser("~/Library/Application Support"), "RVRS MP")
+        config_dir = os.path.join(os.path.expanduser("~/Library/Application Support"), "RVRS-MP")
     elif sys.platform.startswith("linux"):
-        config_dir = os.path.join(os.path.expanduser("~"), ".config", "RVRS MP")
+        config_dir = os.path.join(os.path.expanduser("~"), ".config", "RVRS-MP")
     if os.path.exists(config_dir):
         pass
     else:
         os.mkdir(config_dir)
         open(os.path.join(config_dir, 'music.txt'), "a").close()
-    if os.path.exists('music.png') and not os.path.exists(os.path.join(config_dir, 'music.png')):
-        shutil.move('music.png', os.path.join(config_dir, 'music.png'))
-    else:
-        pass
 
     with open(os.path.join(config_dir, 'music.txt'), 'r') as f:
         if f.read() == '':
-            print(f"Please add paths to your song to {os.path.join(config_dir, 'music.txt')}, each song seperate by a line break")
-            exit()
-    pygame.init()
+            print(f"Please add path to your songs to {os.path.join(config_dir, 'music.txt')}, each song seperate by a line break")
+            sys.exit()
+    pygame.mixer.init(frequency=48000, size=32, channels=2)
 
     try:
         app = Player()
         app.run()
     except KeyboardInterrupt:
-        exit()
+        sys.exit()
