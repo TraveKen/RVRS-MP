@@ -1,0 +1,81 @@
+Screen {
+    padding: 1 1;
+}
+
+
+#control {
+    layout: horizontal;
+    width: 1fr;
+    padding: 1;
+    align: left bottom;
+}
+
+#options {
+    layout: horizontal;
+    width: auto;
+    align: center bottom
+}
+
+.seperator {
+    width: 1fr;
+}
+
+.button_placeholder {
+    min-width: 5;
+}
+
+#songselect_and_image {
+    layout: horizontal;
+    align: center bottom;
+    width: 1fr;
+    height: 1fr;
+}
+
+#songselect {
+    min-width: 5;
+}
+
+#volume {
+    min-width: 5;
+}
+
+
+RadioSet {
+    width: 0.7fr;
+    height: 1fr;
+    overflow_y: auto;
+}
+
+#title_container {
+    layout: horizontal;
+    align: center bottom;
+    width: 1fr;
+    padding: 0 0 1 0
+}
+
+#time {
+    layout: horizontal;
+    align: center bottom;
+    padding: 1;
+}
+
+#current_time {
+    width: 1fr;
+}
+
+
+ImageViewer {
+    height: 1fr;
+    width: 1fr;
+    padding: 0 0;
+}
+
+#time_slider {
+    width: 1fr;
+    align: center bottom;
+}
+
+
+Input {
+    width: 1fr;
+}
