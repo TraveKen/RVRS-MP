@@ -296,7 +296,7 @@ if __name__ == "__main__":
 
     with open(os.path.join(config_dir, 'music.txt'), 'r') as f:
         if f.read() == '':
-            print(f"Please add path to your .mp3 files to {os.path.join(config_dir, 'music.txt')}, each song seperate by a line break")
+            print(f"Please add paths to your song to {os.path.join(config_dir, 'music.txt')}, each song seperate by a line break")
             exit()
     pygame.init()
 
