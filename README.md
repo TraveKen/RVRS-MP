@@ -3,7 +3,7 @@
 
 
 
-
+![applogo](https://github.com/TraveKen/RVRS-MP/blob/main/previews/logo.png?raw=true)
 
 <h3 align="center">RVRS Music Player</h3>
 
@@ -13,7 +13,6 @@
     <br />
   </p>
 </div>
-
 
 
 <!-- ABOUT THE PROJECT -->
