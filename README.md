@@ -46,7 +46,6 @@ RVRS-MP is a simple music player created using Python and Texual framework.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 
@@ -58,10 +57,14 @@ The path to the `music.txt` file for each OS is as following:
 * MacOS (untested): `~/Library/Application Support/RVRS-MP`
 
 ### Keybinds
+* Tab/Shift+Tab: Navigate
+* Enter: Press/Choose/Submit
 * Space: Play/pause
 * N: Next song
 * P: Previous song
-* Tab/Shift+Tab: Navigate
+* B: Show song list
+* M: Show volume slider
+* J: Focus the Input widget
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -70,9 +73,10 @@ The path to the `music.txt` file for each OS is as following:
 <!-- ROADMAP -->
 ## Cons/Known bugs/Features to add
 
-- [ ] Lack of in-app add/remove songs feature
-- [ ] Lack of album/group feature
-- [ ] Lack of app's icon (not really necessary but it would be very cool to have)
+- [ ] Add in-app add/remove songs feature
+- [ ] Add album/group feature
+- [ ] Add app's icon (not really necessary but it would be very cool to have)
+- [ ] Add Discord rich presence
 - [ ] High CPU usage when adjusting the slider
 - [ ] Can't adjust the slider using keyboard (keyboard users will have to use the Input box to navigate within a song)
 - [ ] Improve interface
