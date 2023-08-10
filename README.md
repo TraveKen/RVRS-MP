@@ -70,7 +70,7 @@ RVRS-MP is a simple music player created using Python and Texual framework.
 ### Adding songs
 For now, there isn't add/remove song feature, you'll need to manually edit the `music.txt` file. Add paths to your audio file in the `music.txt` file, each song seperate by a line break, don't leave empty line or non-existing paths.</br>
 The path to the `music.txt` file for each OS is as following:
-* Windows: `C:\Users\{YourUserName}\AppData\Roaming\RVRS-MP`
+* Windows: `C:\Program Files\RVRS-MP`
 * Linux: `/home/{YourUserName}/.config/RVRS-MP`
 * MacOS (untested): `~/Library/Application Support/RVRS-MP`
 
