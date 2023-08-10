@@ -45,8 +45,27 @@ RVRS-MP is a simple music player created using Python and Texual framework.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+## Install
+### Windows
+* Download and run the installer: https://github.com/TraveKen/RVRS-MP/releases/download/1.0/rvrsmp_windows_1.0_x64_install.exe
+
+### Debian-based distros
+* Download the package: https://github.com/TraveKen/RVRS-MP/releases/download/1.0/rvrsmp_1.0_amd64.deb
+* Run `sudo dpkg -i rvrsmp_1.0_amd64.deb`
+
+### Other distros
+* You'll need to download the binary and manually install: https://github.com/TraveKen/RVRS-MP/releases/download/1.0/rvrsmp_linux_x64
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Running/Compiling from source
+### Wil be updated...
+
 <!-- USAGE EXAMPLES -->
 ## Usage
+
+### Start
+* Run `rvrsmp` in a terminal
 
 ### Adding songs
 For now, there isn't add/remove song feature, you'll need to manually edit the `music.txt` file. Add paths to your audio file in the `music.txt` file, each song seperate by a line break, don't leave empty line or non-existing paths.</br>
@@ -94,8 +113,8 @@ The path to the `music.txt` file for each OS is as following:
 
 ## Changes made to pre-exist codes
 ### textual-imageviewer
-- Removed some unnecessary features
-- Added `update` feature to change the image
+- Removed some unnecessary functions
+- Added `update` function to change the image
 ### textual-slider
 - Added `SongEnd` event
 - Added `set_state` function
