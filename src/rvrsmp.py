@@ -134,6 +134,13 @@ class Player(App):
             press('next')
         elif key == "p" or key == "P":
             press('prev')
+        elif key == "b" or key == "B":
+            press('songselect')
+        elif key == "m" or key == "M":
+            press('volume')
+        elif key == "j" or key == "J":
+            j_input = self.query_one(Input)
+            j_input.focus()
 
     @on(Button.Pressed, '#play')
     def playpause(self, event: Button.Pressed) -> None:
@@ -189,6 +196,7 @@ class Player(App):
         else:
             radioset.styles.display = "block"
             songselect_button.variant = "success"
+            radioset.focus()
     @on(Button.Pressed, '#volume')
     def show_volume(self):
         volume_button = self.query_one('#volume')
@@ -199,9 +207,10 @@ class Player(App):
         else:
             volume_slider.styles.display = "block"
             volume_button.variant = "success"
+            volume_slider.focus()
 
     @on(VolumeSlider.Changed, '#volume_slider')
-    def set_volume(self):
+    def set_volume(self) -> None:
         volume_slider = self.query_one('#volume_slider')
         volume_button = self.query_one('#volume')
         if volume_slider.value == 0:
@@ -272,6 +281,7 @@ class Player(App):
         title_widget.update(title_value)
         time_slider.update(0, self.total_time_value)
         total_time.update(convert_seconds_to_mmss(self.total_time_value))
+        self.set_volume()
 
 
 
@@ -280,22 +290,22 @@ class Player(App):
 
 if __name__ == "__main__":
     if sys.platform.startswith("win"):
-        config_dir = os.path.join(os.getenv("APPDATA"), "RVRS-MP")
+        config_dir = os.path.join(os.environ["ProgramFiles"], "RVRS-MP")
     elif sys.platform.startswith("darwin"):
         config_dir = os.path.join(os.path.expanduser("~/Library/Application Support"), "RVRS-MP")
     elif sys.platform.startswith("linux"):
         config_dir = os.path.join(os.path.expanduser("~"), ".config", "RVRS-MP")
-    if os.path.exists(config_dir):
+    if os.path.exists(os.path.join(config_dir, 'music.txt')):
         pass
     else:
-        os.mkdir(config_dir)
+        os.makedirs(config_dir, exist_ok=True)
         open(os.path.join(config_dir, 'music.txt'), "a").close()
 
     with open(os.path.join(config_dir, 'music.txt'), 'r') as f:
         if f.read() == '':
             print(f"Please add path to your songs to {os.path.join(config_dir, 'music.txt')}, each song seperate by a line break")
             sys.exit()
-    pygame.mixer.init(frequency=48000, size=32, channels=2)
+    pygame.mixer.init(frequency=192000, size=32, channels=2)
 
     try:
         app = Player()
