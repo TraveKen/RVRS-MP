@@ -94,7 +94,7 @@ The path to the `music.txt` file for each OS is as following:
 - [ ] Add in-app add/remove songs feature
 - [ ] Add album/group feature
 - [ ] Add app's icon (not really necessary but it would be very cool to have)
-- [ ] Add Discord rich presence
+- [x] Add Discord rich presence
 - [ ] High CPU usage when adjusting the slider
 - [ ] Can't adjust the slider using keyboard (keyboard users will have to use the Input box to navigate within a song)
 - [ ] Improve interface
