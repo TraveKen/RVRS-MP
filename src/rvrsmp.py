@@ -9,11 +9,14 @@ from PIL import Image
 import eyed3
 from textual.reactive import reactive
 import pygame
-from multiprocessing import Process
-import shutil
+import asyncio
 from io import BytesIO
-
+from pypresence import Presence
 import sys
+from time import sleep
+from threading import Thread
+import time as u_time
+
 
 def play_audio(audio, start_time):
     pygame.mixer.music.load(audio)
@@ -36,6 +39,9 @@ def convert_mmss_to_seconds(mmss):
         return 'error'
 class Player(App):
     CSS_PATH = 'player.css'
+    def __init__(self):
+        super().__init__()
+        self.RPC = Presence('1139781023308206082')
     def compose(self) -> ComposeResult:
         yield Header()
         with Center(id='songselect_and_image'):
@@ -81,15 +87,19 @@ class Player(App):
 
     @on(Slider.Changed)
     def update_screen(self) -> None:
-        time = self.query_one("#time_slider", Slider).value
+        self.time = self.query_one("#time_slider", Slider).value
         current_time = self.query_one("#current_time")
-        current_time.update(convert_seconds_to_mmss(time))
+        current_time.update(convert_seconds_to_mmss(self.time))
+
 
     @on(Slider.MouseCapture)
     def pause(self) -> None:
         if self.status == 'playing':
             pygame.mixer.music.stop()
             self.status = 'tem_paused'
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value,
+                                                    "state": f"{convert_seconds_to_mmss(self.total_time_value - self.time)} left",
+                                                    "large_image": "logo", "small_image": "paused"})).start()
         else:
             pass
 
@@ -99,6 +109,14 @@ class Player(App):
         if self.status == 'tem_paused':
             play_audio(self.song_list[self.song_count], time)
             self.status = 'playing'
+            timestamp = int(u_time.time() + self.total_time_value - self.time)
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value,
+                                                    "end": timestamp,
+                                                    "large_image": "logo"})).start()
+        else:
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value,
+                                                    "state": f"{convert_seconds_to_mmss(self.total_time_value - self.time)} left",
+                                                    "large_image": "logo", "small_image": "paused"})).start()
 
     @on(Input.Submitted)
     def jump(self, event: Input.Submitted) -> None:
@@ -151,11 +169,13 @@ class Player(App):
             play_button.label = '▶'
             play_button.variant = 'default'
             self.status = 'paused'
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value, "state": f"{convert_seconds_to_mmss(self.total_time_value - self.time)} left", "large_image" : "logo", "small_image" : "paused"})).start()
         else:
             play_audio(self.song_list[self.song_count], time_slider.value)
             play_button.label = '■'
             play_button.variant = 'error'
             self.status = 'playing'
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value, "end": int(u_time.time() + self.total_time_value - self.time), "large_image": "logo"})).start()
         time_slider.set_state(self.status)
 
     @on(Button.Pressed, '#prev')
@@ -164,7 +184,13 @@ class Player(App):
         time_slider = self.query_one("#time_slider", Slider)
         if time_slider.value >= 2:
             time_slider.value = 0
-            play_audio(self.song_list[self.song_count], 0)
+            if self.status == 'playing':
+                play_audio(self.song_list[self.song_count], 0)
+                Thread(target=self.RPC.update, kwargs=({"details": self.title_value, "end": int(u_time.time() + self.total_time_value), "large_image": "logo"})).start()
+            else:
+                Thread(target=self.RPC.update, kwargs=({"details": self.title_value,
+                                                        "state": f"{convert_seconds_to_mmss(self.total_time_value - self.time)} left",
+                                                        "large_image": "logo", "small_image": "paused"})).start()
         else:
             if self.song_count == 0:
                 self.song_count = len(self.song_list) - 1
@@ -241,8 +267,8 @@ class Player(App):
         self.song_count = 0
         self.status = 'playing'
         self.title = "RVRS MP"
+        Thread(target=self.connectdiscord).start()
         self.update_player()
-        #self.set_interval(1/1, self.check_song)
 
     @on(Slider.SongEnd)
     def check_song(self, event: Slider.SongEnd) -> None:
@@ -266,9 +292,9 @@ class Player(App):
         time_slider = self.query_one("#time_slider", Slider)
         if audio.tag:
             if audio.tag.title:
-                title_value = audio.tag.title
+                self.title_value = audio.tag.title
             else:
-                title_value = os.path.splitext(os.path.basename(self.song_list[self.song_count]))[0]
+                self.title_value = os.path.splitext(os.path.basename(self.song_list[self.song_count]))[0]
             if audio.tag.images:
                 image_byte = BytesIO(audio.tag.images[0].image_data)
                 thumbnail = Image.open(image_byte)
@@ -278,10 +304,24 @@ class Player(App):
         if self.status == 'playing':
             play_audio(self.song_list[self.song_count], 0)
         image_widget.update(thumbnail)
-        title_widget.update(title_value)
+        title_widget.update(self.title_value)
         time_slider.update(0, self.total_time_value)
         total_time.update(convert_seconds_to_mmss(self.total_time_value))
         self.set_volume()
+        if self.status == 'paused':
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value, "state": f"{convert_seconds_to_mmss(self.total_time_value)} left", "large_image": "logo", "small_image": "paused"})).start()
+        else:
+            Thread(target=self.RPC.update, kwargs=({"details": self.title_value, "end": int(u_time.time() + self.total_time_value), "large_image": "logo"})).start()
+
+    def connectdiscord(self) -> None:
+        while True:
+            try:
+                self.RPC.connect()
+                Thread(target=self.RPC.update, kwargs=({"details": self.title_value, "end": int(u_time.time() + self.total_time_value), "large_image": "logo"})).start()
+                break
+            except Exception as e:
+                sleep(5)
+                continue
 
 
 
